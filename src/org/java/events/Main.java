@@ -1,6 +1,8 @@
 package org.java.events;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -15,21 +17,27 @@ public class Main {
 
             System.out.print("Titolo: ");
             String titolo = in.nextLine();
-
             System.out.print("Data dell'evento (formato dd/MM/yyyy): ");
             String dataInput = in.nextLine();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            java.util.Date d = dateFormat.parse(dataInput);
+            Date d = dateFormat.parse(dataInput);
             Date data = new Date(d.getTime());
 
             System.out.print("Numero di posti totali: ");
             int postiTotali = in.nextInt();
+            
+            System.out.print("Ora dell'evento (formato HH:mm): ");
+            String oraInput = in.next();
+            LocalTime ora = LocalTime.parse(oraInput);
 
-            // CREAZIONE NUOVO EVENTO
-            Evento event = new Evento(titolo, data, postiTotali);
+            System.out.print("Prezzo dell'evento: ");
+            BigDecimal prezzo = in.nextBigDecimal();
 
-            System.out.println("Evento creato con successo:");
-            System.out.println(event);
+            // CREAZIONE NUOVO CONCERTO
+            Concerto c = new Concerto(titolo, data, ora, postiTotali, prezzo);
+
+            System.out.println("Concerto creato con successo:");
+            System.out.println(c);
             
             //PRENOTAZIONI
 
@@ -44,9 +52,9 @@ public class Main {
                 // EFFETTURARE LA PRENOTAZIONE
                 for (int i = 0; i < nPrenotazioni; i++) {
                     try {
-                        event.prenota();
-                        System.out.println("Prenotato un posto. Posti prenotati: " + event.getPostiPrenotati()
-                                + ", Posti disponibili: " + (event.getPostiTotali() - event.getPostiPrenotati()));
+                        c.prenota();
+                        System.out.println("Prenotazione effettuata. Posti prenotati: " + c.getPostiPrenotati()
+                                + ", Posti disponibili: " + (c.getPostiTotali() - c.getPostiPrenotati()));
                     } catch (IllegalStateException e) {
                         System.err.println("Impossibile prenotare un posto: " + e.getMessage());
                     }
@@ -70,9 +78,9 @@ public class Main {
 
                 for (int i = 0; i < nDisdette; i++) {
                     try {
-                        event.disdici();
-                        System.out.println("Disdetto un posto. Posti prenotati: " + event.getPostiPrenotati()
-                                + " Posti disponibili: " + (event.getPostiTotali() - event.getPostiPrenotati()));
+                        c.disdici();
+                        System.out.println("Disdetto un posto. Posti prenotati: " + c.getPostiPrenotati()
+                                + " Posti disponibili: " + (c.getPostiTotali() - c.getPostiPrenotati()));
                     } catch (IllegalStateException e) {
                         System.err.println("Impossibile disdire un posto: " + e.getMessage());
                     }
