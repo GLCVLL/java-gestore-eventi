@@ -1,8 +1,6 @@
 package org.java.events;
 
-import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.LocalTime;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -20,24 +18,23 @@ public class Main {
             System.out.print("Data dell'evento (formato dd/MM/yyyy): ");
             String dataInput = in.nextLine();
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-            Date d = dateFormat.parse(dataInput);
+            java.util.Date d = dateFormat.parse(dataInput);
+
+            // Converti la data da java.util.Date a java.sql.Date
             Date data = new Date(d.getTime());
 
             System.out.print("Numero di posti totali: ");
             int postiTotali = in.nextInt();
-            
-            System.out.print("Ora dell'evento (formato HH:mm): ");
-            String oraInput = in.next();
-            LocalTime ora = LocalTime.parse(oraInput);
 
-            System.out.print("Prezzo dell'evento: ");
-            BigDecimal prezzo = in.nextBigDecimal();
+            // Crea un nuovo evento
+            Evento event = new Evento(titolo, data, postiTotali);
 
-            // CREAZIONE NUOVO CONCERTO
-            Concerto c = new Concerto(titolo, data, ora, postiTotali, prezzo);
+            // Visualizza i dettagli dell'evento
+            System.out.println("Evento creato con successo:");
+            System.out.println(event);
 
             System.out.println("Concerto creato con successo:");
-            System.out.println(c);
+            System.out.println(event);
             
             //PRENOTAZIONI
 
@@ -52,9 +49,9 @@ public class Main {
                 // EFFETTURARE LA PRENOTAZIONE
                 for (int i = 0; i < nPrenotazioni; i++) {
                     try {
-                        c.prenota();
-                        System.out.println("Prenotazione effettuata. Posti prenotati: " + c.getPostiPrenotati()
-                                + ", Posti disponibili: " + (c.getPostiTotali() - c.getPostiPrenotati()));
+                    	event.prenota();
+                        System.out.println("Prenotazione effettuata. Posti prenotati: " + event.getPostiPrenotati()
+                                + ", Posti disponibili: " + (event.getPostiTotali() - event.getPostiPrenotati()));
                     } catch (IllegalStateException e) {
                         System.err.println("Impossibile prenotare un posto: " + e.getMessage());
                     }
@@ -78,9 +75,9 @@ public class Main {
 
                 for (int i = 0; i < nDisdette; i++) {
                     try {
-                        c.disdici();
-                        System.out.println("Disdetto un posto. Posti prenotati: " + c.getPostiPrenotati()
-                                + " Posti disponibili: " + (c.getPostiTotali() - c.getPostiPrenotati()));
+                    	event.disdici();
+                        System.out.println("Disdetto un posto. Posti prenotati: " + event.getPostiPrenotati()
+                                + " Posti disponibili: " + (event.getPostiTotali() - event.getPostiPrenotati()));
                     } catch (IllegalStateException e) {
                         System.err.println("Impossibile disdire un posto: " + e.getMessage());
                     }
@@ -89,6 +86,21 @@ public class Main {
                 System.out.print("Desideri fare altre disdette? (Si/No): ");
                 answer = in.next();
             }
+            
+            System.out.println("Vuoi inserire altri eventi? ");
+
+            System.out.print("Titolo dell'evento: ");
+            String titoloProgramma = in.nextLine();
+
+            ProgrammaEventi programma = new ProgrammaEventi(titoloProgramma);
+
+            // EVENTI DI ESEMPIO
+            Evento evento1 = new Evento("Evento 1", new Date(), 100);
+            Evento evento2 = new Evento("Evento 2", new Date(), 150);
+            programma.addEvent(evento1);
+            programma.addEvent(evento2);
+
+            System.out.println(programma.eventsListPerDate());
 
         } catch (Exception e) {
             System.err.println("Errore: " + e.getMessage());
